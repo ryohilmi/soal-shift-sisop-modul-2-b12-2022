@@ -1,11 +1,15 @@
-#include <stdlib.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
-#include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <syslog.h>
+#include <string.h>
 #include <json-c/json.h>
 #include <dirent.h>
-#include <string.h>
 #include <time.h>
 
 #define CHARACTER 1
@@ -44,9 +48,10 @@ void run_exec(char path[], char *argv[])
 void download(char filename[], char url[])
 {
     char *argv[] = {"wget",
+                    url,
                     "-O",
                     filename,
-                    url,
+                    "-q",
                     NULL};
 
     run_exec("/usr/bin/wget", argv);
@@ -54,7 +59,7 @@ void download(char filename[], char url[])
 
 void extract_zip(char filename[], char output[])
 {
-    char *arg[] = {"unzip", "-n", filename, "-d", output, NULL};
+    char *arg[] = {"unzip", "-q", filename, "-d", output, NULL};
     run_exec("/usr/bin/unzip", arg);
 }
 
@@ -140,6 +145,7 @@ void gacha(GachaItem items[], int *item_count, int *gacha_count, int primogems)
     {
         sprintf(file_count, "%d", *gacha_count + (primogems < 1600 ? primogems / 160 : 10));
         sprintf(gacha_file, "%s/%02d:%02d:%02d_gacha_%s.txt", gacha_dir, local->tm_hour, local->tm_min, local->tm_sec, file_count);
+        sleep(1);
     }
 
     FILE *fp;
@@ -148,41 +154,93 @@ void gacha(GachaItem items[], int *item_count, int *gacha_count, int primogems)
     fclose(fp);
 }
 
+void zip()
+{
+    char *arg[] = {"zip", "-r", "-qq", "-P", "satuduatiga", "not_safe_for_wibu.zip", "gacha_gacha/", NULL};
+    run_exec("/usr/bin/zip", arg);
+}
+
 int main()
 {
-    int primogems = 79000;
+    pid_t pid, sid;
 
-    GachaItem characters[50];
-    GachaItem weapons[150];
+    pid = fork();
 
-    int *characters_count = malloc(sizeof(int));
-    int *weapons_count = malloc(sizeof(int));
-    int *gacha_count = malloc(sizeof(int));
-    *gacha_count = 0;
-
-    download("characters.zip", "https://drive.google.com/uc?export=download&id=1xYYmsslb-9s8-4BDvosym7R4EmPi6BHp");
-    download("weapon.zip", "https://drive.google.com/uc?export=download&id=1XSkAqqjkNmzZ0AdIZQt_eWGOZ0eJyNlT");
-    make_dir("gacha_gacha");
-    extract_zip("characters.zip", "gacha_gacha/");
-    extract_zip("weapon.zip", "gacha_gacha/");
-
-    parse_json(weapons, WEAPON, weapons_count);
-    parse_json(characters, CHARACTER, characters_count);
-
-    while (primogems >= 160)
+    if (pid < 0)
     {
-        if (*gacha_count % 2 == 0)
-        {
-            gacha(characters, characters_count, gacha_count, primogems);
-        }
-        else
-        {
-            gacha(weapons, weapons_count, gacha_count, primogems);
-        }
-
-        (*gacha_count)++;
-        primogems -= 160;
+        exit(EXIT_FAILURE);
     }
 
-    return 0;
+    if (pid > 0)
+    {
+        exit(EXIT_SUCCESS);
+    }
+
+    umask(0);
+
+    sid = setsid();
+    if (sid < 0)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    if ((chdir("/home/ryohilmi/Sisop/soal-shift-sisop-modul-2-b12-2022/soal1")) < 0)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
+
+    while (1)
+    {
+        struct tm *local;
+        time_t t = time(NULL);
+        local = localtime(&t);
+
+        if (local->tm_mday == 30 && local->tm_mon == 2 && local->tm_hour == 4 && local->tm_min == 44)
+        {
+            int primogems = 79000;
+
+            GachaItem characters[50];
+            GachaItem weapons[150];
+
+            int *characters_count = malloc(sizeof(int));
+            int *weapons_count = malloc(sizeof(int));
+            int *gacha_count = malloc(sizeof(int));
+            *gacha_count = 0;
+
+            download("characters.zip", "https://drive.google.com/uc?export=download&id=1xYYmsslb-9s8-4BDvosym7R4EmPi6BHp");
+            download("weapon.zip", "https://drive.google.com/uc?export=download&id=1XSkAqqjkNmzZ0AdIZQt_eWGOZ0eJyNlT");
+            make_dir("gacha_gacha");
+            extract_zip("characters.zip", "gacha_gacha/");
+            extract_zip("weapon.zip", "gacha_gacha/");
+
+            parse_json(weapons, WEAPON, weapons_count);
+            parse_json(characters, CHARACTER, characters_count);
+
+            while (primogems >= 160)
+            {
+                if (*gacha_count % 2 == 0)
+                {
+                    gacha(characters, characters_count, gacha_count, primogems);
+                }
+                else
+                {
+                    gacha(weapons, weapons_count, gacha_count, primogems);
+                }
+
+                (*gacha_count)++;
+                primogems -= 160;
+            }
+        }
+
+        if (local->tm_mday == 30 && local->tm_mon == 2 && local->tm_hour == 7 && local->tm_min == 44)
+        {
+            zip();
+        }
+
+        sleep(30);
+    }
 }
