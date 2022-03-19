@@ -1,0 +1,10 @@
+451_character_Aloy_5
+452_weapon_Staff of Homa_5
+453_character_Chongyun_4
+454_weapon_Sword of Descension_4
+455_character_Yae Miko_5
+456_weapon_Elegy for the End_5
+457_character_Xinyan_4
+458_weapon_Crescent Pike_4
+459_character_Yoimiya_5
+460_weapon_Iron Point_2

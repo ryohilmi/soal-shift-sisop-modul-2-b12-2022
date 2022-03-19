@@ -1,0 +1,10 @@
+481_character_Xiangling_4
+482_weapon_Halberd_3
+483_character_Mona_5
+484_weapon_Blackcliff Agate_4
+485_character_Jean_5
+486_weapon_Recurve Bow_3
+487_character_Ganyu_5
+488_weapon_Blackcliff Longsword_4
+489_character_Diona_4
+490_weapon_Mouun's Moon_4

@@ -1,0 +1,10 @@
+301_character_Lumine_5
+302_weapon_Freedom-Sworn_5
+303_character_Xiangling_4
+304_weapon_Iron Point_2
+305_character_Sangonomiya Kokomi_5
+306_weapon_Windblume Ode_4
+307_character_Tartaglia_5
+308_weapon_Blackcliff Slasher_4
+309_character_Yoimiya_5
+310_weapon_Recurve Bow_3

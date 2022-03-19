@@ -1,0 +1,10 @@
+121_character_Rosaria_4
+122_weapon_Primordial Jade Cutter_5
+123_character_Yun Jin_4
+124_weapon_Blackcliff Pole_4
+125_character_Sangonomiya Kokomi_5
+126_weapon_Lithic Spear_4
+127_character_Zhongli_5
+128_weapon_Dull Blade_1
+129_character_Chongyun_4
+130_weapon_Oathsworn Eye_4

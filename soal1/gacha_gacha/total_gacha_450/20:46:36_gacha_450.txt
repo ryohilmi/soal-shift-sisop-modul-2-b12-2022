@@ -1,0 +1,10 @@
+441_character_Keqing_5
+442_weapon_Silver Sword_2
+443_character_Xingqiu_4
+444_weapon_The Viridescent Hunt_4
+445_character_Sayu_4
+446_weapon_Pocket Grimoire_2
+447_character_Noelle_4
+448_weapon_Kagura's Verity_5
+449_character_Thoma_4
+450_weapon_Vortex Vanquisher_5

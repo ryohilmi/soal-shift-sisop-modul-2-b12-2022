@@ -1,0 +1,10 @@
+251_character_Lisa_4
+252_weapon_Seasoned Hunter's Bow_2
+253_character_Jean_5
+254_weapon_Iron Point_2
+255_character_Keqing_5
+256_weapon_Engulfing Lightning_5
+257_character_Xiao_5
+258_weapon_Favonius Codex_4
+259_character_Kaedehara Kazuha_5
+260_weapon_Polar Star_5

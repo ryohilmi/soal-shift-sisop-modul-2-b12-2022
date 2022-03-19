@@ -1,0 +1,10 @@
+281_character_Kaeya_4
+282_weapon_Windblume Ode_4
+283_character_Tartaglia_5
+284_weapon_Vortex Vanquisher_5
+285_character_Chongyun_4
+286_weapon_Summit Shaper_5
+287_character_Razor_4
+288_weapon_Waster Greatsword_1
+289_character_Yun Jin_4
+290_weapon_Favonius Warbow_4

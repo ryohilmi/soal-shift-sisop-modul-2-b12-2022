@@ -1,0 +1,10 @@
+201_character_Kaeya_4
+202_weapon_Katsuragikiri Nagamasa_4
+203_character_Amber_4
+204_weapon_Seasoned Hunter's Bow_2
+205_character_Noelle_4
+206_weapon_Alley Hunter_4
+207_character_Shenhe_5
+208_weapon_Blackcliff Pole_4
+209_character_Zhongli_5
+210_weapon_Everlasting Moonglow_5

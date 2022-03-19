@@ -1,0 +1,10 @@
+111_character_Xiangling_4
+112_weapon_Amos' Bow_5
+113_character_Thoma_4
+114_weapon_Redhorn Stonethresher_5
+115_character_Venti_5
+116_weapon_Thundering Pulse_5
+117_character_Kaeya_4
+118_weapon_Dull Blade_1
+119_character_Rosaria_4
+120_weapon_Vortex Vanquisher_5

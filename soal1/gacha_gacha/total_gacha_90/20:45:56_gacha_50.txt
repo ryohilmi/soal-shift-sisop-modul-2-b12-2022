@@ -1,0 +1,10 @@
+41_character_Yanfei_4
+42_weapon_Cinnabar Spindle_4
+43_character_Klee_5
+44_weapon_Dull Blade_1
+45_character_Fischl_4
+46_weapon_Elegy for the End_5
+47_character_Bennett_4
+48_weapon_Lost Prayer to the Sacred Winds_5
+49_character_Ningguang_4
+50_weapon_Iron Point_2
