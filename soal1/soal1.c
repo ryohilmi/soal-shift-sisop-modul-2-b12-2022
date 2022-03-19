@@ -160,6 +160,12 @@ void zip()
     run_exec("/usr/bin/zip", arg);
 }
 
+void remove_files(char dir[])
+{
+    char *arg[] = {"rm", "-rf", dir, NULL};
+    run_exec("/bin/rm", arg);
+}
+
 int main()
 {
     pid_t pid, sid;
@@ -239,6 +245,9 @@ int main()
         if (local->tm_mday == 30 && local->tm_mon == 2 && local->tm_hour == 7 && local->tm_min == 44)
         {
             zip();
+            remove_files("gacha_gacha/");
+            remove_files("characters.zip");
+            remove_files("weapon.zip");
         }
 
         sleep(30);
