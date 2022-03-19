@@ -6,6 +6,7 @@
 #include <json-c/json.h>
 #include <dirent.h>
 #include <string.h>
+#include <time.h>
 
 #define CHARACTER 1
 #define WEAPON 2
@@ -42,14 +43,13 @@ void run_exec(char path[], char *argv[])
 
 void download(char filename[], char url[])
 {
-    char *argv[] = {"curl",
-                    "-L",
-                    "-o",
+    char *argv[] = {"wget",
+                    "-O",
                     filename,
                     url,
                     NULL};
 
-    run_exec("/usr/bin/curl", argv);
+    run_exec("/usr/bin/wget", argv);
 }
 
 void extract_zip(char filename[], char output[])
@@ -114,20 +114,38 @@ void parse_json(GachaItem items[], int type, int *count)
     }
 }
 
-void gacha(GachaItem items[], int *item_count, int *gacha_count)
+void gacha(GachaItem items[], int *item_count, int *gacha_count, int primogems)
 {
-    int random = rand() % *item_count;
+    struct tm *local;
+    time_t t = time(NULL);
 
-    char path[100];
-    char count[10];
+    local = localtime(&t);
+
+    int random = rand() % (*item_count - 2);
+
+    static char gacha_dir[100];
+    static char gacha_file[100];
+    char dir_count[10];
+    char file_count[10];
+
+    if (*gacha_count % 90 == 0)
+    {
+        sprintf(dir_count, "%d", *gacha_count + (primogems < 14400 ? primogems / 160 : 90));
+        strcpy(gacha_dir, "gacha_gacha/total_gacha_");
+        strcat(gacha_dir, dir_count);
+        make_dir(gacha_dir);
+    }
 
     if (*gacha_count % 10 == 0)
     {
-        sprintf(count, "%d", *gacha_count + 10);
-        strcpy(path, "gacha_gacha/total_gacha_");
-        strcat(path, count);
-        make_dir(path);
+        sprintf(file_count, "%d", *gacha_count + (primogems < 1600 ? primogems / 160 : 10));
+        sprintf(gacha_file, "%s/%02d:%02d:%02d_gacha_%s.txt", gacha_dir, local->tm_hour, local->tm_min, local->tm_sec, file_count);
     }
+
+    FILE *fp;
+    fp = fopen(gacha_file, "a");
+    fprintf(fp, "%d_%s_%s_%d\n", *gacha_count + 1, *gacha_count % 2 == 0 ? "character" : "weapon", items[random].name, items[random].rarity);
+    fclose(fp);
 }
 
 int main()
@@ -155,11 +173,11 @@ int main()
     {
         if (*gacha_count % 2 == 0)
         {
-            gacha(characters, characters_count, gacha_count);
+            gacha(characters, characters_count, gacha_count, primogems);
         }
         else
         {
-            gacha(weapons, weapons_count, gacha_count);
+            gacha(weapons, weapons_count, gacha_count, primogems);
         }
 
         (*gacha_count)++;
