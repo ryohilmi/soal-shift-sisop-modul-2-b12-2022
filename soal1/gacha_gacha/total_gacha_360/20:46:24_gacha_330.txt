@@ -1,0 +1,10 @@
+321_character_Xingqiu_4
+322_weapon_Iron Point_2
+323_character_Kaedehara Kazuha_5
+324_weapon_Royal Longsword_4
+325_character_Kaeya_4
+326_weapon_Rainslasher_4
+327_character_Sayu_4
+328_weapon_Skyward Spine_5
+329_character_Klee_5
+330_weapon_Pocket Grimoire_2

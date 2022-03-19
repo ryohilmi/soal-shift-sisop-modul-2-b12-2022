@@ -1,0 +1,10 @@
+21_character_Lumine_5
+22_weapon_Sacrificial Bow_4
+23_character_Tartaglia_5
+24_weapon_Dark Iron Sword_3
+25_character_Chongyun_4
+26_weapon_Prototype Amber_4
+27_character_Raiden Shogun_5
+28_weapon_The Bell_4
+29_character_Chongyun_4
+30_weapon_Serpent Spine_4

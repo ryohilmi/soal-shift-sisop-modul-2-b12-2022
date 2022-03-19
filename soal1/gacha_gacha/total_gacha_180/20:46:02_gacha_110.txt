@@ -1,0 +1,10 @@
+101_character_Venti_5
+102_weapon_Serpent Spine_4
+103_character_Beidou_4
+104_weapon_Magic Guide_3
+105_character_Beidou_4
+106_weapon_Black Tassel_3
+107_character_Ningguang_4
+108_weapon_Freedom-Sworn_5
+109_character_Klee_5
+110_weapon_Hunter's Bow_1

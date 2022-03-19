@@ -1,0 +1,10 @@
+181_character_Bennett_4
+182_weapon_Mitternachts Waltz_4
+183_character_Arataki Itto_5
+184_weapon_The Bell_4
+185_character_Thoma_4
+186_weapon_Royal Greatsword_4
+187_character_Diona_4
+188_weapon_Serpent Spine_4
+189_character_Lumine_5
+190_weapon_Blackcliff Longsword_4

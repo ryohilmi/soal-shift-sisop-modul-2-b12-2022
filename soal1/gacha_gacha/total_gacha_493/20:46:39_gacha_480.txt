@@ -1,0 +1,10 @@
+471_character_Thoma_4
+472_weapon_Sword of Descension_4
+473_character_Lisa_4
+474_weapon_Lion's Roar_4
+475_character_Aloy_5
+476_weapon_Sharpshooter's Oath_3
+477_character_Eula_5
+478_weapon_Katsuragikiri Nagamasa_4
+479_character_Shenhe_5
+480_weapon_Sacrificial Fragments_4

@@ -1,0 +1,10 @@
+51_character_Ganyu_5
+52_weapon_Traveler's Handy Sword_3
+53_character_Xiangling_4
+54_weapon_Lost Prayer to the Sacred Winds_5
+55_character_Sayu_4
+56_weapon_Ferrous Shadow_3
+57_character_Eula_5
+58_weapon_Lion's Roar_4
+59_character_Arataki Itto_5
+60_weapon_Elegy for the End_5
