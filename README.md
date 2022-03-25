@@ -118,4 +118,9 @@ Membuat file `list.txt` yang akan menyimpan informasi berupa `UID_[UID FILE PERM
 ### Dokumentasi Pengerjaan
 - Menganalisis Soal
 ![Penganalisisan_Soal](/uploads/f3a0c2b9e6868a6e10777dd893bc01b2/Penganalisisan_Soal.jpeg)
--
+- Pengetesan Sleep
+![Pengetesan_Sleep](/uploads/89a6fe128247f022cd880f0afd4808a8/Pengetesan_Sleep.jpeg)
+- Pengerjaan
+![Pengerjaan_3a](/uploads/7c44ba8cc74277594d2e80a38e9b0322/Pengerjaan_3a.jpeg)
+### Kendala
+- Kendala terjadi pada proses command `find` + `-exec mv`. Hal ini disebabkan kesalahpahaman akan sintaks yang dilihat dari referensi di internet, yakni "'\*darat\*'". Hal ini sangat merepotkan karena kesalahan tadi tidak termasuk dalam sintaks error sehingga tidak ada informasi error. Solusi yang benar adalah menghapus petik satu "\*darat\*".
