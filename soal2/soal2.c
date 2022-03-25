@@ -68,7 +68,131 @@ void move_genre(struct drakor *ptr, int index, char path[]){
 	}
 }
 
-//fungsi untuk mengekstract zip sekaligus menghapus folder yg tidak diperlukan
+//check array of struct
+void check_struct(struct drakor *ptr, int flag){
+	for(int i=0; i<flag; i++){
+		printf("file name: %s\n", (ptr+i)->name_file);
+		printf("title : %s\n", (ptr+i)->title);
+		printf("year: %d\n", (ptr+i)->year);
+		printf("genre : %s\n", (ptr+i)->genre);
+		printf("\n");
+	}
+	return;
+}
+
+//
+void list_genre(struct drakor *ptr, int flag){
+	struct drakor list[100];
+	int index_list = flag;
+	for(int i=0; i<flag; i++){
+		strcpy(list[i].genre, (ptr+i)->genre);
+	}
+	//hapus duplicate genre
+	for(int i=0; i<index_list; i++){
+		for(int j=i+1; j<index_list; j++){
+			if(strcmp(list[i].genre, list[j].genre)==0){
+				for(int k=j; k<index_list; k++){
+					strcpy(list[k].genre, list[k+1].genre);
+				}
+				j--;
+				index_list--;
+			}	
+		}
+	}
+	//cek list genre
+	printf("Ada %d genre, yaitu : ", index_list);
+	for(int i=0; i<index_list; i++){
+		printf("%s\n", list[i].genre);
+	}
+
+	//text
+	for(int i=0; i<index_list; i++){
+		struct drakor tmp[100];
+		int index_tmp=0;
+		for(int j=0; j<flag; j++){
+			if(strcmp(list[i].genre, (ptr+j)->genre)==0){
+				strcpy(tmp[index_tmp].title, (ptr+j)->title);
+				tmp[index_tmp].year=(ptr+j)->year;
+				index_tmp++;
+			}
+		}
+		for(int j=0; j<index_tmp-1; j++){
+			int min_id=j;
+			for(int k=j+1; k<index_tmp; k++){
+				if(tmp[k].year<tmp[min_id].year){
+				min_id=k;
+				struct drakor tmp2;
+ 				strcpy(tmp2.title,tmp[min_id].title);
+				tmp2.year=tmp[min_id].year;
+				strcpy(tmp[min_id].title, tmp[j].title);
+				tmp[min_id].year=tmp[j].year;
+				strcpy(tmp[j].title, tmp2.title);
+				tmp[j].year=tmp2.year;
+				}		
+			}
+		}
+		char text_path[100];
+		strcpy(text_path, "/home/alya/shift2/drakor/");
+		strcat(text_path, list[i].genre);
+		strcat(text_path, "/data.txt");
+
+		pid_t child_id;
+		child_id = fork();
+		int status;
+
+		if(child_id <0){
+			exit(EXIT_FAILURE);
+		}
+		if(child_id == 0){
+			char *argv[] = {"touch", text_path, NULL};
+			execv("/usr/bin/touch", argv);
+		} else {
+			while((wait(&status)) > 0);
+		}
+
+		char isi_text[1000];
+		strcpy(isi_text, "kategori : ");
+		strcat(isi_text, list[i].genre);
+		for(int i=0; i<index_tmp; i++){
+			strcat(isi_text, "\n\n");
+			strcat(isi_text, "nama : ");
+			strcat(isi_text, tmp[i].title);
+			strcat(isi_text, "\n");
+			strcat(isi_text, "rilis : ");
+			char movie_year[10];
+			sprintf(movie_year, "%d", (tmp[i].year));
+			strcat(isi_text, movie_year);
+		}
+		FILE *fptr=fopen(text_path, "a");
+		fputs(isi_text, fptr);
+		fclose(fptr);
+		}
+		return;
+}
+
+//menghapus file png diluar folder genre
+void delete_file(struct drakor *ptr, int i){
+	pid_t child_id;
+	child_id = fork();
+	int status;
+
+	if(child_id < 0){
+		exit(EXIT_FAILURE);
+	}
+	if(child_id == 0){
+		char del_path[100];
+		strcpy(del_path, "/home/alya/shift2/drakor");
+		strcat(del_path, "/");
+		strcat(del_path, (ptr+i)->name_file);
+		char *argv[] = {"find", del_path, "-delete", NULL};
+		execv("/bin/find", argv);
+	} else {
+		while((wait(&status)) > 0);
+		return;
+	}
+}
+
+//mengekstract zip sekaligus menghapus folder yg tidak diperlukan
 void extract (char *zipfile, char *dir){
         char *argv[] = { "unzip", "-o", zipfile, "-d", dir, "*.png", NULL };
         execv ("/usr/bin/unzip", argv);
@@ -77,7 +201,7 @@ void extract (char *zipfile, char *dir){
 int main(){
 	char path[50];
 	strcpy(path, "/home");
-	strcat(path, "/alya/shift2/drakor");
+	strcat(path, "/alya/shift2/drakor/");
 
 	pid_t child_id;
         child_id = fork();
@@ -126,6 +250,14 @@ int main(){
 			}
 			for(int i=0; i<flag; i++) folder_genre(data, i, path);
 			for(int i=0; i<flag; i++) move_genre(data, i, path);
+			check_struct(data, flag);
+			list_genre(data, flag);
+			
+			for(int i=0; i<flag; i++) delete_file(data, i);
+			char *argv[] = {"find", path, NULL};
+			execv("/bin/find", argv);
+			closedir(dir);
+			
         	}
 	}
 }
