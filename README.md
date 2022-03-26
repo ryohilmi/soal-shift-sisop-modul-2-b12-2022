@@ -19,7 +19,7 @@ void extract (char *zipfile, char *dir){
 }
 ```
 
-> membuat fungsi `extract` yang memanggil command `unzip` untuk mengekstrak zip file. Didalam fungsi ini sekaligus menghapus folder-folder yang tidak diperlukan dengan menambahkan `"*.png"` dimana mengekstrak format png saja.
+Membuat fungsi `extract` yang memanggil command `unzip` untuk mengekstrak zip file. Didalam fungsi ini sekaligus menghapus folder-folder yang tidak diperlukan dengan menambahkan `"*.png"` dimana mengekstrak format png saja.
 
 ```sh
 char path[50];
@@ -44,7 +44,7 @@ char path[50];
    			extract("/home/alya/drakor.zip", "/home/alya/shift2/drakor");
 
 ```
->Sebelum memanggil fungsi extract yang telah dibuat, membuat folder destination extract `shift2` dan `drakor` terlebih dahulu karena tidak diperbolehkan untuk membuat foldernya secara manual. Setelah itu baru memanggil fungsi `extract`.
+Sebelum memanggil fungsi extract yang telah dibuat, membuat folder destination extract `shift2` dan `drakor` terlebih dahulu karena tidak diperbolehkan untuk membuat foldernya secara manual. Setelah itu baru memanggil fungsi `extract`.
 
 ## 2.b
 Poster drama korea perlu dikategorikan sesuai jenisnya, maka program harus membuat folder untuk setiap jenis drama korea yang sudah ter-extract. Karena tidak mungkin memeriksa satu-persatu manual, maka program harus membuatkan folder-folder yang dibutuhkan sesuai dengan genre pada poster drama korea.
@@ -87,7 +87,7 @@ DIR *dir = opendir(path);
 	}
 ...
 ```
-> Membaca semua file path dan mengambil setiap data dari name file. Lalu, memasukkan setiap data kedalam `struct drakor` yang telah diinialisasi sebelumnya, gunakan juga `strtok` untuk mengambil data title, year, dan genre dari setiap file yang tersedia. Setelah didapat semua data pada `path`, kirim data dan looping sebanyak jumlah flag untuk membuat folder dengan melengkapi path sesuai genre apa saja yang tersedia dalam setiap nama file di `path`.
+Membaca semua file path dan mengambil setiap data dari name file. Lalu, memasukkan setiap data kedalam `struct drakor` yang telah diinialisasi sebelumnya, gunakan juga `strtok` untuk mengambil data title, year, dan genre dari setiap file yang tersedia. Setelah didapat semua data pada `path`, kirim data dan looping sebanyak jumlah flag untuk membuat folder dengan melengkapi path sesuai genre apa saja yang tersedia dalam setiap nama file di `path`.
 
 ```sh
 void folder_genre(struct drakor *ptr, int index, char path[]){
@@ -142,17 +142,17 @@ Karena dalam satu foto bisa terdapat lebih dari satu poster maka foto harus dipi
 
 ```sh
 int flag1 = 0;
-		...
-		if(strchr(data[flag].name_file, '_')!= 0) flag1++;
-		...
-				if(flag1!=0){
-					strcpy(data[flag].name_file, data[flag-1].name_file);
-					strcpy(data[flag].title, tok);
-					flag1=0;
-				}
+	...
+	if(strchr(data[flag].name_file, '_')!= 0) flag1++;
+	...
+		if(flag1!=0){
+			strcpy(data[flag].name_file, data[flag-1].name_file);
+			strcpy(data[flag].title, tok);
+			flag1=0;
+		}
 ...
 ```
- Seperti yang sudah dijelaskan pada poin b, untuk case ini memakai `strchr` untuk mencari nama file yang menunjukkan dua poster sekaligus, tandai file tersebut dan catat data tersebut dengan nama file yang sama pada array of struct setelahnya. Jadi, setelah didapatkan dua nama file yang sama pada beberapa iterasi yang berurutan, data nama poster tersebut digunakan untuk mencatat path `from` pada poin c sebelumnya dan didapatkan dua file dengan folder genre di masing-masing poster pada file tersebut. 
+Seperti yang sudah dijelaskan pada poin b, untuk case ini memakai `strchr` untuk mencari nama file yang menunjukkan dua poster sekaligus, tandai file tersebut dan catat data tersebut dengan nama file yang sama pada array of struct setelahnya. Jadi, setelah didapatkan dua nama file yang sama pada beberapa iterasi yang berurutan, data nama poster tersebut digunakan untuk mencatat path `from` pada poin c sebelumnya dan didapatkan dua file dengan folder genre di masing-masing poster pada file tersebut. 
 
 ```sh
 ...
@@ -247,17 +247,17 @@ void list_genre(struct drakor *ptr, int flag){
 		return;
 }
 ```
-> Menentukan destination path file txt `text_path` dimana sesuai dengan genre masing-masing drama korea dan menuliskan text dengan format yang sudah ditentukan `isi_text`, yakni kategori, nama, lalu tahun rilis yang mana nantinya akan diurutkan secara ascending berdasarkan tahun rilisnya. Setelah itu, file txt akan diletakkan ke `text_path` menggunakan `fputs`.
+Menentukan destination path file txt `text_path` dimana sesuai dengan genre masing-masing drama korea dan menuliskan text dengan format yang sudah ditentukan `isi_text`, yakni kategori, nama, lalu tahun rilis yang mana nantinya akan diurutkan secara ascending berdasarkan tahun rilisnya. Setelah itu, file txt akan diletakkan ke `text_path` menggunakan `fputs`.
 
 ## Dokumentasi Pengerjaan
 - Pembuatan script c
-![script_c](/uploads/c65663997a90c35b99359c1ff7bb6aac/script_c.jpeg)
+![script_c](/uploads/b06fe0354d21dc7991fb6ef2fc3476c2/script_c.jpeg)
 - hasil folder_genre
-![folder_genre](/uploads/c71dc5ce3f62af03c2356d683e816bcf/folder_genre.jpeg)
+![folder_genre](/uploads/8328e6abbf209f365506f66227e9a755/folder_genre.jpeg)
 - hasil move_genre
-![isi_folder_genre](/uploads/61fc961f439f72e458fb2dc4df8ee44a/isi_folder_genre.jpeg)
+![isi_folder_genre](/uploads/d553fe077a3dd788665c0e08a0467204/isi_folder_genre.jpeg)
 - hasil txt
-![isi_text](/uploads/4b640c5f801ec30da157a5ee93144714/isi_text.jpeg)
+![isi_text](/uploads/b89c4fbf672663f4c823501958efbd95/isi_text.jpeg)
 
 ## Kendala
 Kendala-kendala saat progress pengerjaan soal nomor 2 :
