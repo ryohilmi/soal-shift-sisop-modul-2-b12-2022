@@ -244,6 +244,10 @@ void remove_files(char dir[])
 ```
 
 ## Dokumentasi Pengerjaan
+- Pembuatan script c
+![script_c](https://cdn.discordapp.com/attachments/856447778091696148/957650041202425896/unknown-150.png)
+- hasil gacha
+![hasil_gacha](https://cdn.discordapp.com/attachments/856447778091696148/957650041407963226/unknown-160.png)
 
 ## Kendala
 Terdapat beberapa kendala yang muncul saat melakukan pengerjaan, diantaranya:
