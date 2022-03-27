@@ -5,6 +5,253 @@
 - [Ryo Hilmi Ridho](https://gitlab.com/ryohilmi): 5025201192
 - [Surya Abdillah](https://gitlab.com/Surya_Abdillah): 5025201229
 
+# Soal 1
+## Penjelasan Soal
+Pada soal nomor 1 ini, praktikan diminta untuk membuat sebuah program daemon yang melakukan gacha, dengan data-data characters dan weapon yang diberikan dalam bentuk json, yang kemudian di-extract dan di-parse
+
+## Pengerjaan
+Untuk mempermudah pengerjaan, saya membuat sebuah fungsi yang digunakan untuk menjalankan exec tanpa harus melakukan fork secara manual
+
+```c
+void run_exec(char path[], char *argv[])
+{
+    pid_t child_id;
+    int status;
+
+    child_id = fork();
+
+    if (child_id < 0)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    if (child_id == 0)
+    {
+        execv(path, argv);
+        exit(0);
+    }
+    else
+    {
+        while ((wait(&status)) > 0)
+            ;
+    }
+}
+```
+
+## 1.a
+Saat program berjalan, dua file zip character dan weapon akan di-download kemudian di-extract ke folder gacha_gacha. Saya membuat 3 fungsi yang digunakan untuk download, extract zip dan membuat folder
+```c
+
+void download(char filename[], char url[])
+{
+    char *argv[] = {"wget",
+                    url,
+                    "-O",
+                    filename,
+                    "-q",
+                    NULL};
+
+    run_exec("/usr/bin/wget", argv);
+}
+
+void extract_zip(char filename[], char output[])
+{
+    char *arg[] = {"unzip", "-q", filename, "-d", output, NULL};
+    run_exec("/usr/bin/unzip", arg);
+}
+
+void make_dir(char dir[])
+{
+    char *arg[] = {"mkdir", "-p", dir, NULL};
+    run_exec("/bin/mkdir", arg);
+}
+
+```
+
+Tiga fungsi tersebut dipanggil seperti berikut
+```c
+download("characters.zip", "https://drive.google.com/uc?export=download&id=1xYYmsslb-9s8-4BDvosym7R4EmPi6BHp");
+download("weapon.zip", "https://drive.google.com/uc?export=download&id=1XSkAqqjkNmzZ0AdIZQt_eWGOZ0eJyNlT");
+make_dir("gacha_gacha");
+extract_zip("characters.zip", "gacha_gacha/");
+extract_zip("weapon.zip", "gacha_gacha/");
+```
+
+## 1.b, 1.c, dan 1.d
+Sub soal b, c, dan d saling berhubungan. Untuk pengerjaannya, saya membuat sebuah struct bernama GachaItem yang berfungsi untuk menampung nama dan rarity dari character dan weapon yang akan di-gacha, lalu membuat 2 array kosong yang akan diisi dengan semua character dan weapon yang ada. Setelah data di-parse dan dimasukkan ke dalam array, akan dilakukan gacha sesuai dengan jumlah primogems yang ada sesuai ketentuan.
+
+```c
+struct
+{
+    char name[100];
+    int rarity;
+} typedef GachaItem;
+
+
+int primogems = 79000;
+
+GachaItem characters[50];
+GachaItem weapons[150];
+
+int *characters_count = malloc(sizeof(int));
+int *weapons_count = malloc(sizeof(int));
+int *gacha_count = malloc(sizeof(int));
+*gacha_count = 0;
+
+parse_json(weapons, WEAPON, weapons_count);
+parse_json(characters, CHARACTER, characters_count);
+
+while (primogems >= 160)
+{
+	if (*gacha_count % 2 == 0)
+	{
+		gacha(characters, characters_count, gacha_count, primogems);
+	}
+	else
+	{
+		gacha(weapons, weapons_count, gacha_count, primogems);
+	}
+
+	(*gacha_count)++;
+	primogems -= 160;
+}
+```
+
+Untuk parse json-nya, saya menggunakan 2 fungsi, yaitu `read_file` dan `parse_json`. `parse_json` berfungsi untuk menge-loop semua file yang ada dan akan memanggil `read_file` yang berfungsi untuk parse data name dan rarity lalu memasukkannya ke dalam array.
+```c
+void read_file(char dir[], char filename[], GachaItem *character)
+{
+    FILE *fp;
+    char buffer[5120];
+    char target_file[100];
+
+    struct json_object *parsed_json;
+    struct json_object *name;
+    struct json_object *rarity;
+
+    strcpy(target_file, dir);
+    strcat(target_file, filename);
+
+    fp = fopen(target_file, "r");
+    fread(buffer, sizeof(char), 5120, fp);
+    fclose(fp);
+
+    parsed_json = json_tokener_parse(buffer);
+
+    json_object_object_get_ex(parsed_json, "name", &name);
+    json_object_object_get_ex(parsed_json, "rarity", &rarity);
+
+    strcpy(character->name, json_object_get_string(name));
+    character->rarity = json_object_get_int(rarity);
+}
+
+void parse_json(GachaItem items[], int type, int *count)
+{
+    DIR *dp;
+    struct dirent *ep;
+
+    char *path = (type == CHARACTER ? "gacha_gacha/characters/" : "gacha_gacha/weapons/");
+
+    dp = opendir(path);
+
+    if (dp != NULL)
+    {
+        for (int i = 0; (ep = readdir(dp)); i++)
+        {
+            GachaItem *item = malloc(sizeof(GachaItem));
+            items[i] = *item;
+            read_file(path, ep->d_name, &items[i]);
+
+            *count = i;
+        }
+
+        (void)closedir(dp);
+    }
+}
+
+```
+
+Untuk proses gachanya sendiri, saya membuat fungsi bernama `gacha`. Pada fungsi tersebut, pertama-tama diambil waktu untuk nama file, lalu mengambil angka random untuk memilih item random. Dibuat variabel `gacha_dir` dan `gacha_file` untuk menampung nama directory dan filenya.
+
+```c
+void gacha(GachaItem items[], int *item_count, int *gacha_count, int primogems)
+{
+    struct tm *local;
+    time_t t = time(NULL);
+
+    local = localtime(&t);
+
+    int random = rand() % (*item_count - 2);
+
+    static char gacha_dir[100];
+    static char gacha_file[100];
+    char dir_count[10];
+    char file_count[10];
+
+    if (*gacha_count % 90 == 0)
+    {
+        sprintf(dir_count, "%d", *gacha_count + (primogems < 14400 ? primogems / 160 : 90));
+        strcpy(gacha_dir, "gacha_gacha/total_gacha_");
+        strcat(gacha_dir, dir_count);
+        make_dir(gacha_dir);
+    }
+
+    if (*gacha_count % 10 == 0)
+    {
+        sprintf(file_count, "%d", *gacha_count + (primogems < 1600 ? primogems / 160 : 10));
+        sprintf(gacha_file, "%s/%02d:%02d:%02d_gacha_%s.txt", gacha_dir, local->tm_hour, local->tm_min, local->tm_sec, file_count);
+        sleep(1);
+    }
+
+    FILE *fp;
+    fp = fopen(gacha_file, "a");
+    fprintf(fp, "%d_%s_%s_%d\n", *gacha_count + 1, *gacha_count % 2 == 0 ? "character" : "weapon", items[random].name, items[random].rarity);
+    fclose(fp);
+}
+```
+
+## 1.e 
+Pada sub soal 1.e, praktikan diminta untuk mengecek waktu sebelum proses gachanya dilakukan. Jika gacha sudah selesai, folder gacha_gacha akan di-zip kemudian dihapus
+
+```c
+if (local->tm_mday == 30 && local->tm_mon == 2 && local->tm_hour == 4 && local->tm_min == 44)
+{
+	// gacha
+}
+
+if (local->tm_mday == 30 && local->tm_mon == 2 && local->tm_hour == 7 && local->tm_min == 44)
+{
+	zip();
+	remove_files("gacha_gacha/");
+	remove_files("characters.zip");
+	remove_files("weapon.zip");
+}
+```
+
+Berikut isi dari funngsi zip dan remove
+```c
+void zip()
+{
+    char *arg[] = {"zip", "-r", "-qq", "-P", "satuduatiga", "not_safe_for_wibu.zip", "gacha_gacha/", NULL};
+    run_exec("/usr/bin/zip", arg);
+}
+
+void remove_files(char dir[])
+{
+    char *arg[] = {"rm", "-rf", dir, NULL};
+    run_exec("/bin/rm", arg);
+}
+```
+
+## Dokumentasi Pengerjaan
+
+## Kendala
+Terdapat beberapa kendala yang muncul saat melakukan pengerjaan, diantaranya:
+- fork() yang dipanggil beberapa kali menyebabkan kodenya sulit dibaca, sehingga akhirnya saya membuat fungsi `run_exec` untuk merapihkan kodenya
+- Pada saat pengerjaan, program dibuat tanpa menggunakan daemon terlebih dahulu. Setelah diubah menjadi daemon, program tidak berjalan seperti semestinya yang ternyata disebabkan oleh `wget` dan `zip` yang belum diberi quiet option, sehingga memberikan output ke stdout dan program pun stuck.
+
+
+
 # Soal 2
 ### Penjelasan Soal
 Pada soal nomor 2 ini diberikan folder zip bernama drakor.zip yang berisi poster-poster drama korea dengan format png. Dengan folder zip ini, kami ditugaskan untuk mengekstrak dan memisahkan poster-poster drama korea tersebut tergantung dengan kategorinya.
