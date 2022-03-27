@@ -95,7 +95,7 @@ int main() {
                     pid_t child_id10; child_id10 = fork();
 
                     if(child_id10 == 0){
-                      execl("/bin/gawk","gawk","-i","inplace","BEGIN{FS=\"-\"} {print $1\"-\"$2$6}",to_list,NULL);
+                      execl("/bin/gawk","gawk","-i","inplace","BEGIN{FS=\"-\"} {print $1\"-\"$2$(NF)}",to_list,NULL);
                     } else {
                       while((wait(&status)) > 0);
                       execl("/bin/gawk","gawk","-i","inplace","BEGIN{FS=\"_\"} { print $1\"_\"$2\"_\"$3\".jpg\"}",to_list,NULL);
